@@ -18,8 +18,8 @@ namespace TennisCourt.Infra.Data.Context.Configurations
                  .GetRequiredService<IServiceScopeFactory>()
                  .CreateScope();
 
-            using var context = serviceScope.ServiceProvider.GetService<TennisCourtContext>();
-            context.Database.Migrate();
+            using var context = serviceScope.ServiceProvider.GetService<TennisCourtContext>();         
+            //context.Database.Migrate();
         }
 
     }

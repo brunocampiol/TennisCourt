@@ -1,11 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TennisCourt.Infra.CrossCutting.Commons.Extensions
 {
@@ -68,7 +63,7 @@ namespace TennisCourt.Infra.CrossCutting.Commons.Extensions
             {
                 return (true, objToJson.ToJson(useSettings), default);
             }
-            catch (Exception ex)
+            catch
             {
                 return (false, default, "error");
             }
@@ -90,7 +85,7 @@ namespace TennisCourt.Infra.CrossCutting.Commons.Extensions
             {
                 return (true, stringToObject.ToObject<T>(useSettings), string.Empty);
             }
-            catch (Exception ex)
+            catch
             {
                 return (false, default, "error");
             }

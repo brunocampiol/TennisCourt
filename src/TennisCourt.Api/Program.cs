@@ -1,7 +1,8 @@
-using Steeltoe.Common.Hosting;
 using Steeltoe.Extensions.Configuration.CloudFoundry;
 using TennisCourt.Api.Configurations;
 using TennisCourt.Api.Swagger;
+using TennisCourt.Infra.CrossCutting.Commons.Extensions;
+using TennisCourt.Infra.CrossCutting.Commons.Providers;
 using TennisCourt.Infra.CrossCutting.IoC;
 using TennisCourt.Infra.Data.Context;
 using TennisCourt.Infra.Data.Context.Configurations;
@@ -9,13 +10,10 @@ using TennisCourt.Infra.Data.Context.Configurations;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddCloudFoundry();
-
-
-if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") != Environments.Development)
-{
-    builder.UseCloudHosting();
-}
-
+//if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") != Environments.Development)
+//{
+//    builder.UseCloudHosting();
+//}
 
 builder.Services.AddControllersWithViews((options) =>
 {
@@ -34,6 +32,8 @@ builder.Services.AddOptions();
 // Read from VCAP_SERVICES env variable and and generate keys to IConfiguration
 builder.Services.ConfigureCloudFoundryOptions(builder.Configuration);
 
+builder.Services.AddOptionsCloudFoundry<UserProvidedSettingsProvider>(builder.Configuration, "NsUserProvided");
+
 // ASP.NET HttpContext dependency
 builder.Services.AddHttpContextAccessor();
 
@@ -51,7 +51,7 @@ builder.Services.AddSwaggerSetup(builder.Configuration);
 builder.Services.ConfigureApplicationCookie(opt =>
 {
     opt.Cookie.HttpOnly = true;
-    opt.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.Always;
+    opt.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -64,16 +64,17 @@ if (builder.Environment.IsDevelopment()) app.UseDeveloperExceptionPage();
 //if (!builder.Environment.IsProduction()) app.ApplyMigrations();
 
 //Security
-if (!builder.Environment.IsDevelopment())
-{
-    app.ApplyMigrations();
-    app.UseHsts();
-    app.Use(async (context, next) =>
-    {
-        context.Response.Headers.Add("X-Frame-Options", "DENY");
-        await next();
-    });
-}
+app.ApplyMigrations();
+//if (!builder.Environment.IsDevelopment())
+//{
+//    app.ApplyMigrations();
+//    app.UseHsts();
+//    app.Use(async (context, next) =>
+//    {
+//        context.Response.Headers.Add("X-Frame-Options", "DENY");
+//        await next();
+//    });
+//}
 
 // Configure the HTTP request pipeline.
 app.UseSwagger();

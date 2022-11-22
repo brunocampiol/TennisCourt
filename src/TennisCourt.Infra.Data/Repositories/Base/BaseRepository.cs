@@ -1,9 +1,7 @@
-﻿using TennisCourt.Domain.Interfaces.Repositories;
-using TennisCourt.Domain.Models;
-using TennisCourt.Infra.Data.Context;
-using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using TennisCourt.Domain.Interfaces.Repositories;
 using TennisCourt.Domain.Models.Base;
+using TennisCourt.Infra.Data.Context;
 
 namespace TennisCourt.Infra.Data.Repositories.Base
 {
@@ -32,6 +30,12 @@ namespace TennisCourt.Infra.Data.Repositories.Base
             {
                 return DbSet.AsQueryable<TEntity>();
             }
+        }
+
+        public async Task UpdateAsync(TEntity entity)
+        {
+            DbSet.Update(entity);
+            await Db.SaveChangesAsync();
         }
 
         public TEntity Add(TEntity entity)

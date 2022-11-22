@@ -1,38 +1,44 @@
 ﻿using AutoMapper;
+using TennisCourt.Application.DTO;
 using TennisCourt.Application.Interface;
-using TennisCourt.Domain.Interfaces.Repositories;
+using TennisCourt.Domain.Interfaces.Services;
 using TennisCourt.Domain.Models;
-using TennisCourt.Infra.CrossCutting.Commons.Extensions;
 
 namespace TennisCourt.Application.Services
 {
     public class ReservationAppService : IReservationAppService
     {
+        private readonly IReservationService _reservationService;
+        private readonly IMapper _mapper;
 
-        private readonly IReservationRepository _repository;
-        public ReservationAppService(IReservationRepository repository)
+        public ReservationAppService(IReservationService reservationService,
+                                     IMapper mapper)
         {
-            _repository = repository;
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _reservationService = reservationService ?? throw new ArgumentNullException(nameof(reservationService));
         }
 
-        public Task<Reservation> CancelReservation(Reservation reservation)
+        public async Task<Reservation> CancelReservationAsync(CancelReservationDto dto)
         {
-            throw new NotImplementedException();
+            var entity = _mapper.Map<Reservation>(dto);
+            return await _reservationService.CancelReservationAsync(entity);
         }
 
-        public Task<Reservation> GetReservation(Guid id)
+        public async Task<Reservation> GetReservationAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await _reservationService.GetReservationAsync(id);
         }
 
-        public Task<Reservation> ProcessReservation(Reservation reservation)
+        public async Task<Reservation> ProcessReservationAsync(ProcessReservationDto dto)
         {
-            throw new NotImplementedException();
+            var entity = _mapper.Map<Reservation>(dto);
+            return await _reservationService.ProcessReservationAsync(entity);
         }
 
-        public Task<Reservation> RescheduleReservation(Reservation reservation)
+        public async Task<Reservation> RescheduleReservationAsync(RescheduleReservationDto dto)
         {
-            throw new NotImplementedException();
+            var entity = _mapper.Map<Reservation>(dto);
+            return await _reservationService.RescheduleReservationAsync(entity);
         }
     }
 }
